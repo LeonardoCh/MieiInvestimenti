@@ -1,0 +1,27 @@
+import org.apache.spark.rdd.RDD;
+
+val Azioni = sc.textFile("/user/hadoop/Stock24Agosto2020");
+
+val TuplaAzioni : RDD[(Double, Double,
+                       Double, Double,
+                       Int, String, String)] = SeparaDati(Azioni : RDD[String]);
+
+def SeparaDati (RawDatiAzioni : RDD[String]) : RDD[(Double, Double,
+                                                     Double, Double,
+                                                     Int, String, String)] = {
+
+
+
+    val Azione = RawDatiAzioni.map(Righe => {
+                 val elemento = Righe.split(",");
+                 (
+                   elemento(1).toDouble, elemento(2).toDouble,
+                   elemento(3).toDouble, elemento(4).toDouble,
+                   elemento(5).toInt, elemento(6).toString,
+                   elemento(7).toString
+                 )
+    })
+
+return Azione;
+
+}

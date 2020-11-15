@@ -1,0 +1,139 @@
+Per eliminare la prima parte del JSON, con l'intestazione della paginazione, posso usare:
+
+cat ISP-Json | cut --delimiter="," --fields=5-
+
+E' importante notare che questo comando con "cut", finisce con un trattino, e poi senza
+specificare alcun valore.
+
+Questo è intenzionale, vuol dire che a partire da quinto campo, fino alla fine dell'intero
+testo deve essere tutto restituito senza variazioni.
+
+Aggiungo ora, a quel medesimo comando, due sed. 
+
+cat ISP-Json | cut --delimiter="," --fields=5- | sed -e 's/\]\}$//' | sed -e 's/^\"data\"\:\[//'
+
+Il primo dei due, serve a rimuovere il carattere "parentesi quadra chiusa" (]) ,"parentesi 
+graffa chiusa" (}) che si trova proprio alla fine del file. Nel sed infatti, faccio uso 
+della notazione "$" alla fine del simbolo dichiarato da sostituire. Questo carattere 
+speciale "dollaro" ($), indica, che il carattere da sostituire si trova alla fine del 
+file.
+
+Il secondo sed invece deve rimuovere la stringa:      
+
+"data":[ 
+
+Nella quale ho dovuto fare l'escape di tutti i caratteri speciali che compaiono che sono, 
+nell'ordine: il primo doppio apice, il secondo doppio apice, i due punti, e la parentesi 
+quadra aperta.
+
+Anche in questo secondo sed ho fatto uso del carattere speciale "accento circonflesso (^).
+
+Allo stesso modo del carattere "dollaro" che ho usato poco prima, l'accesso circonflesso
+indica che la stringa da cercare ed eliminare, si trova all'inizio del file.
+
+Quindi dicendo a sed: s/^.........  è come se gli dicessi che la stringa da sostituire la
+deve cercare all'inizio del file.
+
+Aggiungo ora un ulteriore frammento:
+
+cat ISP-Json \
+	| cut --delimiter="," --fields=5- \
+	| sed -e 's/\]\}$//' \
+	| sed -e 's/^\"data\"\:\[//' \
+	| awk -F "}," '{print $1}'
+
+Con l'ultimo frammento posso estrarre, separatamente, tutte le righe che compongono il testo.
+
+cat ISP-Json \
+	| cut --delimiter="," --fields=5- \
+	| sed -e 's/\]\}$//' \
+	| sed -e 's/^\"data\"\:\[//' \
+	| awk -F "}," '{print $1}' \
+	| awk -F ":" '{print $2}' \
+	| sed -e 's/\,\"high\"$//'
+
+Con l'ultima riga elimino la parola "high".
+
+In definitiva, il valore di apertura corrispondente alla giornata piu recente, sarà:
+
+Apertura = $(cat ISP-Json \
+        	| cut --delimiter="," --fields=5- \
+        	| sed -e 's/\]\}$//' \
+        	| sed -e 's/^\"data\"\:\[//' \
+        	| awk -F "}," '{print $1}' \
+        	| awk -F ":" '{print $2}' \
+        	| sed -e 's/\,\"high\"$//')
+
+A seguire, tutti gli altri valori, estratti con la medesima tecnica, ma sempre associati
+alla giornata piu recente di contrattazione.
+
+Tutti questi valori corrispondono al valore "eod" (end of day), di ogni giornata di
+contrattazione.
+
+Massimo = $(cat ISP-Json \
+        	| cut --delimiter="," --fields=5- \
+        	| sed -e 's/\]\}$//' \
+        	| sed -e 's/^\"data\"\:\[//' \
+        	| awk -F "}," '{print $1}' \
+        	| awk -F ":" '{print $3}' \
+
+Minimo = $(cat ISP-Json \
+        	| cut --delimiter="," --fields=5- \
+        	| sed -e 's/\]\}$//' \
+        	| sed -e 's/^\"data\"\:\[//' \
+        	| awk -F "}," '{print $1}' \
+        	| awk -F ":" '{print $4}' \
+		| sed -e 's/\,\"close\"$//'
+
+Chiusura = $(cat ISP-Json \
+        	| cut --delimiter="," --fields=5- \
+        	| sed -e 's/\]\}$//' \
+        	| sed -e 's/^\"data\"\:\[//' \
+        	| awk -F "}," '{print $1}' \
+        	| awk -F ":" '{print $5}' \
+		| sed -e 's/\,\"volume\"$//'
+
+Volume = $(cat ISP-Json \
+        	| cut --delimiter="," --fields=5- \
+        	| sed -e 's/\]\}$//' \
+        	| sed -e 's/^\"data\"\:\[//' \
+        	| awk -F "}," '{print $1}' \
+        	| awk -F ":" '{print $6}' \
+		| sed -e 's/\,\"adj_high\"$//'
+
+Simbolo = $(cat ISP-Json \
+        	| cut --delimiter="," --fields=5- \
+        	| sed -e 's/\]\}$//' \
+        	| sed -e 's/^\"data\"\:\[//' \
+        	| awk -F "}," '{print $1}' \
+        	| awk -F ":" '{print $12}' \
+		| sed -e 's/^\"//' \
+		| sed -e 's/\.XMIL\"\,\"exchange\"$//'
+
+Data = $(cat ISP-Json \
+        	| cut --delimiter="," --fields=5- \
+        	| sed -e 's/\]\}$//' \
+        	| sed -e 's/^\"data\"\:\[//' \
+        	| awk -F "}," '{print $1}' \
+        	| awk -F ":" '{print $14}' \
+		| sed -e 's/^\"//'
+
+Devo ora controllare che mysql sia attivo:
+
+MysqlStatus = systemctl status mysql | sed -e 1,2d | grep "Active" | awk -F " " '{print $2}'
+
+La cui variabile MysqlStatus assumera il valore "inactive" oppure "active", in funzione 
+di quale sia lo stato di MySQL.
+
+La riga piu importante, che separa i vari campi, è l'awk:
+
+awk '{print $1,$2,$3,$4,$5,$13}' RS="},{" FS="," > NuovoJson.txt;
+
+Qui awk stampa i campinumero 1,2,3,4,5,13 dove il "Field Separator" (FS) è il carattere
+"virgola" (,).
+Il carattere "Record Separator" (RS), è il carattere "chiusa graffa virgola aperta graffa" 
+( },{ ).
+
+In questo modo definisco, all'interno della mia stringa, come trovare il carattere che separa
+i vari campi (FS) e quale è la combinazione di caratteri che separa i vari record, ovvero le
+linee (RS). 

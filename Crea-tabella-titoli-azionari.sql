@@ -1,0 +1,10 @@
+CREATE TABLE `TitoliAzionari` (
+	`Id` int(16) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`Apertura` float(9,5) UNSIGNED ZEROFILL DEFAULT 0,
+	`Massimo` float(9,5) UNSIGNED ZEROFILL DEFAULT 0,
+	`Minimo` float(9,5) UNSIGNED ZEROFILL DEFAULT 0,
+	`Chiusura` float(9,5) UNSIGNED ZEROFILL DEFAULT 0,
+	`Volume` int(16) UNSIGNED ZEROFILL DEFAULT 0,
+	`Simbolo` varchar(8) DEFAULT 0,
+	`Data` varchar(10) DEFAULT 0
+)

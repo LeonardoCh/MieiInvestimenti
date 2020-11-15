@@ -1,0 +1,2 @@
+mysql --user="leonardo" --password="harpefalcata" --host="localhost" --port=3306 --database=Investimenti < Crea-Tabella-simboli-titoli.sql
+mysql --user="leonardo" --password="harpefalcata" --host="localhost" --port=3306 --database=Investimenti < Crea-tabella-titoli-azionari.sql
