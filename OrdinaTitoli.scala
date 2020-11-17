@@ -1,37 +1,17 @@
 import org.apache.spark.rdd.RDD;
 
-:load /home/leonardo/MioArchivio/MieiInvestimenti/EstraiAzioni.scala
+:load /home/leonardo/MioArchivio/MieiInvestimenti-Repository/MieiInvestimenti/EstraiAzioni.scala
 
 val SAG : RDD[(String, Iterable[(Int, Double, 
                                 Double, Double, 
                                 Double, Int, 
                                 String, String)])] = SimboliAscendenti.groupByKey;
 
+val ElencoGruppi : RDD[String] = SAG.map(item => item._1.distinct);
 
-val SAG1 : Array[(String, Iterable[(Int, Double, 
-                                    Double, Double, 
-                                    Double, Int, 
-                                    String, String)])] = SAG.take(1);
+val NumeroGruppi : Long = ElencoGruppi.count; 
 
-val SAG1A : Array[Array[(Int, Double, Double, 
-                       Double, Double, Int, 
-                       String, String)]] = SAG1.map(item => item._2.toArray);
-
-val SAG1AFM : Array[(Int, Double, Double, Double, 
-               Double, Int, String, String)] = SAG1A.flatMap(item => item);
-
-val VettoreElementi : Vector[(Int, Double, 
-                              Double, Double, 
-                              Double, Int, 
-                              String, String)] = SAG1AFM.toVector;
-
-val VettoreElementiRDD = sc.parallelize(VettoreElementi);
-
-val SAV : RDD[String] = SimboliAscendenti.map(item => item._1.distinct);
-                              
-val SACOUNT : Int = SAV.distinct.count.toInt;
-
-val SAG1ACOUNT : Int = SAG1A(0).size;
+val SAGList = SAG.map(item => (item._1,item._2.toList));
 
 /*
  *
