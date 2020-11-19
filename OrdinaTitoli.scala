@@ -18,6 +18,8 @@ val SAGList : RDD[(String, List[(Int, Double,
 
 val listaStringheTitoli : RDD[String] = SAGList.map(item => "Lista_".concat(item._1));
 
+val vett = SAGList.map(item => ("Lista_".concat(item._1),item._2.map(item2 => item2._1.toInt),item._2.map(item2 => item2._2.toDouble) ));
+
 /*
  *
  * Devo realizzare un metodo per il calcolo dell'indice di forza
