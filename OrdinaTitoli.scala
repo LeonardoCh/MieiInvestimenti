@@ -11,7 +11,12 @@ val ElencoGruppi : RDD[String] = SAG.map(item => item._1.distinct);
 
 val NumeroGruppi : Long = ElencoGruppi.count; 
 
-val SAGList = SAG.map(item => (item._1,item._2.toList));
+val SAGList : RDD[(String, List[(Int, Double, 
+                                 Double, Double, 
+                                 Double, Int, 
+                                 String, String)])] = SAG.map(item => (item._1,item._2.toList));
+
+val listaStringheTitoli : RDD[String] = SAGList.map(item => "Lista_".concat(item._1));
 
 /*
  *
