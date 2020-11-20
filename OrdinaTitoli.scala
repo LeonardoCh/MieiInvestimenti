@@ -14,21 +14,21 @@ val NumeroGruppi : Long = ElencoGruppi.count;
 val SAGList : RDD[List[(String, Int, 
                         Double, Double, 
                         Double, Double, 
-                        Int, String)]] = SAG.map(item => item._2.toList).map(item => item.map(item2 => ("Lista_".concat(item2._7.toString),
+                        Int, Int)]] = SAG.map(item => item._2.toList).map(item => item.map(item2 => ("Lista_".concat(item2._7.toString),
                                                                              item2._1.toInt,
                                                                              item2._2.toDouble,
                                                                              item2._3.toDouble,
                                                                              item2._4.toDouble,
                                                                              item2._5.toDouble,
                                                                              item2._6.toInt,
-                                                                             item2._8.toString.replace("-","")
+                                                                             item2._8.toString.replace("-","").toInt
                                                                                                        )
                                                                                              )
                                                                             );
 
 
 
-RSI(15,Vettori);
+RS(SAGList);
 
 /*
  *
@@ -63,10 +63,10 @@ RSI(15,Vettori);
  *
 */
 
-def RS (SAGList : RDD[(String, Int,
-                       Double, Double,
-                       Double, Double,
-                       Double, String)] ) : Double = {
+def RS (SAGList : RDD[List[(String, Int,
+                            Double, Double,
+                            Double, Double,
+                            Int, Int)]]) : Double = {
 
   val TempValue : List[Double] = List();
   val RSOut : Double = 0;          

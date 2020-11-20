@@ -11,7 +11,24 @@ val ElencoGruppi : RDD[String] = SAG.map(item => item._1.distinct);
 
 val NumeroGruppi : Long = ElencoGruppi.count; 
 
-val SAGList = SAG.map(item => (item._1,item._2.toList));
+val SAGList : RDD[List[(String, Int, 
+                        Double, Double, 
+                        Double, Double, 
+                        Int, Int)]] = SAG.map(item => item._2.toList).map(item => item.map(item2 => ("Lista_".concat(item2._7.toString),
+                                                                             item2._1.toInt,
+                                                                             item2._2.toDouble,
+                                                                             item2._3.toDouble,
+                                                                             item2._4.toDouble,
+                                                                             item2._5.toDouble,
+                                                                             item2._6.toInt,
+                                                                             item2._8.toString.replace("-","").toInt
+                                                                                                       )
+                                                                                             )
+                                                                            );
+
+
+
+RS(SAGList);
 
 /*
  *
@@ -35,30 +52,28 @@ val SAGList = SAG.map(item => (item._1,item._2.toList));
  *
 */
 
-/*
+/* 
+ *
+ * Nell'ordine, le costanti numeriche che compaiono nei Simboli sono:
+ *
+ * Apertura - Massimo - Minimo - Chiusura - Volume - Simbolo - Data
+ *
+ * In particolare l'ultimo elemento, la data, è espressa senza trattini
+ * e nel formato anno mese giorno: AAAAMMGG
+ *
+*/
 
-I metodi qui sotto li lascio come template, se dovessi creare funzioni e variabili aggregati
+def RS (SAGList : RDD[List[(String, Int,
+                            Double, Double,
+                            Double, Double,
+                            Int, Int)]]) : Double = {
 
-val VettoreAzioni : Vector[(Int, Double,
-                           Double, Double,
-                           Double, Int,
-                           String, String)] = GeneraVettore(SAG1AFM : Array[(Int, Double,
-                                                                             Double, Double,
-                                                                             Double, Int,
-                                                                             String, String)]);
+  val TempValue : List[Double] = List();
+  val RSOut : Double = 0;          
+   
+   
+  
 
-def GeneraVettore (FlattedArray : Array[(Int, Double,
-                                         Double, Double,
-                                         Double, Int,
-                                         String, String)]) : Vector[(Int, Double,
-                                                                     Double, Double,
-                                                                     Double, Int,
-                                                                     String, String)] = {
-
-  val elementi = FlattedArray.toVector;
-
-  return elementi;
-
+  return RSOut;
 }
 
-*/
