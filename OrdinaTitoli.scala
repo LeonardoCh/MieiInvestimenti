@@ -71,7 +71,11 @@ def RS (SAGList : RDD[List[(String, Int,
   val TempValue : List[Double] = List();
   val RSOut : Double = 0;          
    
-   
+  /*
+   * Per implementare il calcolo dell'RS uso una funzione scala 
+   * che si chiama "sliding", e serve proprio a calcolare la somma
+   * e la media attraverso una finestra di valori, scorrevole.
+  */
   
 
   return RSOut;
