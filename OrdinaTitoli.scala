@@ -28,7 +28,7 @@ val SAGList : RDD[List[(String, Int,
 
 
 
-RS(SAGList);
+RS(2,SAGList);
 
 /*
  *
@@ -63,10 +63,10 @@ RS(SAGList);
  *
 */
 
-def RS (SAGList : RDD[List[(String, Int,
-                            Double, Double,
-                            Double, Double,
-                            Int, Int)]]) : Double = {
+def RS (Periodi : Int, SAGList : RDD[List[(String, Int,
+                                           Double, Double,
+                                           Double, Double,
+                                           Int, Int)]]) : Double = {
 
   val TempValue : List[Double] = List();
   val RSOut : Double = 0;          
@@ -77,6 +77,8 @@ def RS (SAGList : RDD[List[(String, Int,
    * e la media attraverso una finestra di valori, scorrevole.
   */
   
+
+  val window = SAGList.map(item => item.sliding(Periodi,1).toList);
 
   return RSOut;
 }
