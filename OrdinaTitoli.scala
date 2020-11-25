@@ -77,8 +77,12 @@ def RS (Periodi : Int, SAGList : RDD[List[(String, Int,
    * e la media attraverso una finestra di valori, scorrevole.
   */
   
+  val apertura = SAGList.map(item => item.map(item2 => item2._2));
+  val chiusura = SAGList.map(item => item.map(item2 => item2._5));
 
-  val window = SAGList.map(item => item.sliding(Periodi,1).toList);
+  val window = SAGList.map(item => item.sliding(2,1).toList);
+  val apertura2 = window.map(item => item.map(item2 => item2.map(item3 => item3._2)));
+  val chiusura2 = window.map(item => item.map(item2 => item2.map(item3 => item3._5)));
 
   return RSOut;
 }

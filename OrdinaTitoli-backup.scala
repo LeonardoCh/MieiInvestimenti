@@ -28,7 +28,7 @@ val SAGList : RDD[List[(String, Int,
 
 
 
-RS(SAGList);
+RS(2,SAGList);
 
 /*
  *
@@ -63,16 +63,26 @@ RS(SAGList);
  *
 */
 
-def RS (SAGList : RDD[List[(String, Int,
-                            Double, Double,
-                            Double, Double,
-                            Int, Int)]]) : Double = {
+def RS (Periodi : Int, SAGList : RDD[List[(String, Int,
+                                           Double, Double,
+                                           Double, Double,
+                                           Int, Int)]]) : Double = {
 
   val TempValue : List[Double] = List();
   val RSOut : Double = 0;          
    
-   
+  /*
+   * Per implementare il calcolo dell'RS uso una funzione scala 
+   * che si chiama "sliding", e serve proprio a calcolare la somma
+   * e la media attraverso una finestra di valori, scorrevole.
+  */
   
+  val apertura = SAGList.map(item => item.map(item2 => item2._2));
+  val chiusura = SAGList.map(item => item.map(item2 => item2._5));
+
+  val window = SAGList.map(item => item.sliding(2,1).toList);
+  val apertura2 = window.map(item => item.map(item2 => item2.map(item3 => item3._2)));
+  val chiusura2 = window.map(item => item.map(item2 => item2.map(item3 => item3._5)));
 
   return RSOut;
 }
